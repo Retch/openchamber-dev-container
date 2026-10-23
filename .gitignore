@@ -134,3 +134,12 @@ fabric.properties
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,intellij
+
+config_openchamber/*
+!config_openchamber/.gitkeep
+config_gitconfig/*
+!config_gitconfig/.gitkeep
+config_ssh/*
+!config_ssh/.gitkeep
+config_data/*
+!config_data/.gitkeep
