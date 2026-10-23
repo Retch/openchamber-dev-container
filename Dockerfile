@@ -1,6 +1,5 @@
 FROM fedora:44
 
-# Systemabhängigkeiten
 RUN dnf update -y && dnf install -y \
     curl \
     git \
