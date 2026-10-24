@@ -7,6 +7,7 @@ RUN dnf update -y && dnf install -y \
     gzip \
     bzip2 \
     procps-ng \
+    libatomic \
     && dnf clean all
 
 ENV NVM_DIR="/usr/local/nvm"
