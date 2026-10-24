@@ -12,6 +12,14 @@ UI_PASSWORD="${OPENCHAMBER_UI_PASSWORD:-SecurePassword42}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+NODE_VERSION="24"
+EXTRA_NODE_VERSIONS=""
+CONFIG_FILE="${SCRIPT_DIR}/node-versions.conf"
+if [ -f "${CONFIG_FILE}" ]; then
+    # shellcheck source=/dev/null
+    source "${CONFIG_FILE}"
+fi
+
 PROJECTS_DIR="./data"
 CONFIG_DIR="./config_openchamber"
 SSH_DIR="./config_ssh"
@@ -25,7 +33,11 @@ if [ ! -f "${GITCONFIG_FILE}" ]; then
 fi
 
 echo "==> Build container image (${IMAGE_NAME})..."
-podman build -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
+echo "    Node ${NODE_VERSION} (default), additional: ${EXTRA_NODE_VERSIONS:-none}"
+podman build \
+    --build-arg "NODE_VERSION=${NODE_VERSION}" \
+    --build-arg "EXTRA_NODE_VERSIONS=${EXTRA_NODE_VERSIONS}" \
+    -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
 
 if podman ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
     echo "==> Found container. Stop and remove..."
