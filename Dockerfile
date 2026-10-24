@@ -10,12 +10,19 @@ RUN dnf update -y && dnf install -y \
     && dnf clean all
 
 ENV NVM_DIR="/usr/local/nvm"
-ENV NODE_VERSION=24
+
+ARG NODE_VERSION=24
+ENV NODE_VERSION=${NODE_VERSION}
+
+ARG EXTRA_NODE_VERSIONS=""
 
 RUN mkdir -p $NVM_DIR && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
 
 RUN bash -c 'source $NVM_DIR/nvm.sh && \
+    for v in $EXTRA_NODE_VERSIONS; do \
+        nvm install "$v"; \
+    done && \
     nvm install $NODE_VERSION && \
     nvm alias default $NODE_VERSION && \
     curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path'
