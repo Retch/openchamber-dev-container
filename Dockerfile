@@ -17,7 +17,7 @@ ENV NODE_VERSION=${NODE_VERSION}
 
 ARG EXTRA_NODE_VERSIONS=""
 
-ARG CRAFT_APPS=""
+ARG ARTCRAFT_APPS=""
 
 RUN mkdir -p $NVM_DIR && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
@@ -56,10 +56,10 @@ RUN printf 'export NVM_DIR="/usr/local/nvm"\n[ -s "$NVM_DIR/nvm.sh" ] && \\. "$N
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-COPY install-craft-apps.sh /usr/local/bin/install-craft-apps.sh
-RUN chmod +x /usr/local/bin/install-craft-apps.sh
+COPY install-artcraft-apps.sh /usr/local/bin/install-artcraft-apps.sh
+RUN chmod +x /usr/local/bin/install-artcraft-apps.sh
 
-RUN /usr/local/bin/install-craft-apps.sh && rm /usr/local/bin/install-craft-apps.sh
+RUN /usr/local/bin/install-artcraft-apps.sh && rm /usr/local/bin/install-artcraft-apps.sh
 
 WORKDIR /projects
 EXPOSE 3000

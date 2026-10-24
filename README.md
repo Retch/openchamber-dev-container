@@ -19,12 +19,12 @@ Two config files in this directory are read on startup:
 
 | File                   | Purpose                                                             |
 | ---------------------- | ------------------------------------------------------------------- |
-| `node-versions.conf` | Node version for opencode and openchamber, plus additional versions |
-| `craft-apps.conf`    | ArtCraft suite apps to install and register as MCP servers          |
+| `node-versions.conf`   | Node version for opencode and openchamber, plus additional versions |
+| `artcraft-apps.conf`   | ArtCraft suite apps to install and register as MCP servers          |
 
-### Craft apps
+### ArtCraft apps
 
-`craft-apps.conf` lists the apps to install. The newest release of each app is
+`artcraft-apps.conf` lists the apps to install. The newest release of each app is
 downloaded from its GitHub releases page and installed as an RPM, which puts the
 app and its `*-cli` into `/usr/bin`. Every app is then registered as an MCP
 server for opencode in `/etc/opencode/opencode.jsonc`, so the tools are
@@ -34,5 +34,5 @@ The apps work on the files in `/projects`, which is the `data` directory of this
 repository.
 
 ```sh
-CRAFT_APPS="pdfcraft wordcraft gridcraft"
+ARTCRAFT_APPS="pdfcraft wordcraft gridcraft"
 ```

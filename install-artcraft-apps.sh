@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Installs the ArtCraft suite apps named in CRAFT_APPS as RPMs and registers
+# Installs the ArtCraft suite apps named in ARTCRAFT_APPS as RPMs and registers
 # each of them as an MCP server for opencode.
 
 set -euo pipefail
 
-APPS="${CRAFT_APPS:-}"
+APPS="${ARTCRAFT_APPS:-}"
 CONFIG_DIR="/etc/opencode"
 CONFIG_PATH="${CONFIG_DIR}/opencode.jsonc"
 RELEASE_BASE="https://github.com/storytold"
 
 if [ -z "${APPS// /}" ]; then
-    echo "No craft apps requested, skipping installation."
+    echo "No ArtCraft apps requested, skipping installation."
     exit 0
 fi
 
@@ -36,7 +36,7 @@ install_app() {
     dnf install -y "${rpm_file}"
 }
 
-echo "Installing craft apps: ${APPS}"
+echo "Installing ArtCraft apps: ${APPS}"
 for app in ${APPS}; do
     install_app "${app}"
 done
@@ -65,4 +65,4 @@ mkdir -p "${CONFIG_DIR}"
 } > "${CONFIG_PATH}"
 
 dnf clean all
-echo "Craft MCP config written to ${CONFIG_PATH}"
+echo "ArtCraft MCP config written to ${CONFIG_PATH}"

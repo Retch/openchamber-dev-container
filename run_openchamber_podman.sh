@@ -20,11 +20,11 @@ if [ -f "${CONFIG_FILE}" ]; then
     source "${CONFIG_FILE}"
 fi
 
-CRAFT_APPS=""
-CRAFT_CONFIG_FILE="${SCRIPT_DIR}/craft-apps.conf"
-if [ -f "${CRAFT_CONFIG_FILE}" ]; then
+ARTCRAFT_APPS=""
+ARTCRAFT_CONFIG_FILE="${SCRIPT_DIR}/artcraft-apps.conf"
+if [ -f "${ARTCRAFT_CONFIG_FILE}" ]; then
     # shellcheck source=/dev/null
-    source "${CRAFT_CONFIG_FILE}"
+    source "${ARTCRAFT_CONFIG_FILE}"
 fi
 
 PROJECTS_DIR="./data"
@@ -41,11 +41,11 @@ fi
 
 echo "==> Build container image (${IMAGE_NAME})..."
 echo "    Node ${NODE_VERSION} (default), additional: ${EXTRA_NODE_VERSIONS:-none}"
-echo "    Craft apps: ${CRAFT_APPS:-none}"
+echo "    ArtCraft apps: ${ARTCRAFT_APPS:-none}"
 podman build \
     --build-arg "NODE_VERSION=${NODE_VERSION}" \
     --build-arg "EXTRA_NODE_VERSIONS=${EXTRA_NODE_VERSIONS}" \
-    --build-arg "CRAFT_APPS=${CRAFT_APPS}" \
+    --build-arg "ARTCRAFT_APPS=${ARTCRAFT_APPS}" \
     -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
 
 if podman ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
