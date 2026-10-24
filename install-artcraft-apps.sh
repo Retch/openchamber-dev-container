@@ -5,8 +5,9 @@
 set -euo pipefail
 
 APPS="${ARTCRAFT_APPS:-}"
-CONFIG_DIR="/etc/opencode"
+CONFIG_DIR="${CONFIG_DIR:-/etc/opencode}"
 CONFIG_PATH="${CONFIG_DIR}/opencode.jsonc"
+TEMPLATE_DIR="${TEMPLATE_DIR:-/usr/local/share/artcraft_mcp_templates}"
 RELEASE_BASE="https://github.com/storytold"
 
 if [ -z "${APPS// /}" ]; then
@@ -50,15 +51,44 @@ done
 # variable. opencode only reads opencode.json and opencode.jsonc from a config
 # directory, and setting OPENCODE_CONFIG would make OpenChamber give up its own
 # managed config file, which turns its tool toggles into restarts.
+# The entries themselves come from the MCP templates in ${TEMPLATE_DIR}:
+# <app>.jsonc replaces default.jsonc for that app. A template is the JSON
+# object of one server and has to start with { and end with }.
+
+template_for() {
+    local app="$1"
+    if [ -f "${TEMPLATE_DIR}/${app}.jsonc" ]; then
+        echo "${TEMPLATE_DIR}/${app}.jsonc"
+    elif [ -f "${TEMPLATE_DIR}/default.jsonc" ]; then
+        echo "${TEMPLATE_DIR}/default.jsonc"
+    else
+        echo "No MCP template for ${app} in ${TEMPLATE_DIR} (expected ${app}.jsonc or default.jsonc)." >&2
+        return 1
+    fi
+}
+
+entry_for() {
+    local app="$1" template="$2"
+    # __APP_CLI__ first, so its __APP_ prefix cannot swallow the __APP__ token.
+    # Every line but the first indents one level under the server key.
+    sed -e "s|__APP_CLI__|${app}-cli|g" \
+        -e "s|__APP__|${app}|g" \
+        -e '1!s/^/      /' \
+        "${template}"
+}
+
+# Resolve every template first, so a missing one fails before the config is
+# written.
+for app in ${APPS}; do
+    template_for "${app}" >/dev/null
+done
+
 mkdir -p "${CONFIG_DIR}"
 {
     printf '{\n  "mcp": {\n    "servers": {\n'
     separator=""
     for app in ${APPS}; do
-        printf '%s      "%s": {\n' "${separator}" "${app}"
-        printf '        "type": "local",\n'
-        printf '        "command": ["%s-cli", "mcp", "--root", "/projects"]\n' "${app}"
-        printf '      }'
+        printf '%s      "%s": %s' "${separator}" "${app}" "$(entry_for "${app}" "$(template_for "${app}")")"
         separator=$',\n'
     done
     printf '\n    }\n  }\n}\n'

@@ -56,6 +56,8 @@ RUN printf 'export NVM_DIR="/usr/local/nvm"\n[ -s "$NVM_DIR/nvm.sh" ] && \\. "$N
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+COPY artcraft_mcp_templates/ /usr/local/share/artcraft_mcp_templates/
+
 COPY install-artcraft-apps.sh /usr/local/bin/install-artcraft-apps.sh
 RUN chmod +x /usr/local/bin/install-artcraft-apps.sh
 

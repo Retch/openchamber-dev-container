@@ -1,0 +1,4 @@
+{
+  "type": "local",
+  "command": ["pdfcraft-cli", "mcp", "--root", "/projects"]
+}
