@@ -12,16 +12,23 @@ RUN dnf update -y && dnf install -y \
 
 ENV NVM_DIR="/usr/local/nvm"
 
-ARG NODE_VERSION=24
+# Required build args, passed by run_openchamber_podman.sh from
+# node-versions.conf / python-versions.conf. No default on purpose.
+ARG NODE_VERSION
 ENV NODE_VERSION=${NODE_VERSION}
 
 ARG EXTRA_NODE_VERSIONS=""
 
-ARG PYTHON_VERSION=3.13
+ARG PYTHON_VERSION
 
 ARG EXTRA_PYTHON_VERSIONS=""
 
 ARG ARTCRAFT_APPS=""
+
+RUN if [ -z "${NODE_VERSION}" ] || [ -z "${PYTHON_VERSION}" ]; then \
+        echo "ERROR: NODE_VERSION and PYTHON_VERSION build args are required (node-versions.conf / python-versions.conf)" >&2; \
+        exit 1; \
+    fi
 
 RUN mkdir -p $NVM_DIR && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash

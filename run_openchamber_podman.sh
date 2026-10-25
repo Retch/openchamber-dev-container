@@ -21,21 +21,25 @@ fi
 # The environment variable wins over the config file.
 UI_PASSWORD="${OPENCHAMBER_UI_PASSWORD:-${UI_PASSWORD}}"
 
-NODE_VERSION="24"
-EXTRA_NODE_VERSIONS=""
-CONFIG_FILE="${SCRIPT_DIR}/node-versions.conf"
-if [ -f "${CONFIG_FILE}" ]; then
+# The version conf files are the single source of truth, there is no fallback
+# version in this script or in the Dockerfile.
+load_version_config() {
+    local config_file="$1"
+    if [ ! -f "${config_file}" ]; then
+        echo "ERROR: ${config_file} is missing." >&2
+        exit 1
+    fi
     # shellcheck source=/dev/null
-    source "${CONFIG_FILE}"
-fi
+    source "${config_file}"
+}
 
-PYTHON_VERSION="3.13"
-EXTRA_PYTHON_VERSIONS=""
-PYTHON_CONFIG_FILE="${SCRIPT_DIR}/python-versions.conf"
-if [ -f "${PYTHON_CONFIG_FILE}" ]; then
-    # shellcheck source=/dev/null
-    source "${PYTHON_CONFIG_FILE}"
-fi
+load_version_config "${SCRIPT_DIR}/node-versions.conf"
+: "${NODE_VERSION:?NODE_VERSION is not set in node-versions.conf}"
+EXTRA_NODE_VERSIONS="${EXTRA_NODE_VERSIONS:-}"
+
+load_version_config "${SCRIPT_DIR}/python-versions.conf"
+: "${PYTHON_VERSION:?PYTHON_VERSION is not set in python-versions.conf}"
+EXTRA_PYTHON_VERSIONS="${EXTRA_PYTHON_VERSIONS:-}"
 
 ARTCRAFT_APPS=""
 ARTCRAFT_CONFIG_FILE="${SCRIPT_DIR}/artcraft-apps.conf"

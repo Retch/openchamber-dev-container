@@ -30,6 +30,10 @@ it is decided at build time:
 - **opencode** and **@openchamber/web**
 - **ArtCraft apps** from `artcraft-apps.conf`, registered as MCP servers
 
+`node-versions.conf` and `python-versions.conf` are required: the script exits
+when one is missing or leaves its version empty, and the `Dockerfile` has no
+default version either, so the image cannot be built with a guessed version.
+
 Anything else you want preinstalled — further dnf packages, other toolchains,
 extra MCP servers — goes into the `Dockerfile` the same way and appears after
 the next rebuild.
@@ -44,6 +48,10 @@ Four config files in this directory are read on startup:
 | `node-versions.conf`   | Node version for opencode and openchamber, plus additional versions |
 | `python-versions.conf` | Default python version for uv, plus additional versions             |
 | `artcraft-apps.conf`   | ArtCraft suite apps to install and register as MCP servers          |
+
+`container.conf` and `artcraft-apps.conf` are optional, the script supplies
+their defaults. The two version conf files are not: they define the only place
+where the Node and Python versions are written down.
 
 ### Python (uv)
 
