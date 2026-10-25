@@ -17,6 +17,10 @@ ENV NODE_VERSION=${NODE_VERSION}
 
 ARG EXTRA_NODE_VERSIONS=""
 
+ARG PYTHON_VERSION=3.13
+
+ARG EXTRA_PYTHON_VERSIONS=""
+
 ARG ARTCRAFT_APPS=""
 
 RUN mkdir -p $NVM_DIR && \
@@ -41,7 +45,20 @@ RUN bash -c 'source $NVM_DIR/nvm.sh && \
 RUN printf '#!/usr/bin/env bash\nexport NVM_DIR="/usr/local/nvm"\n. "$NVM_DIR/nvm.sh" --no-use\nnvm "$@"\n' > /usr/local/bin/nvm && \
     chmod +x /usr/local/bin/nvm
 
-ENV PATH="/root/.opencode/bin:$PATH"
+ENV UV_PYTHON_INSTALL_DIR="/usr/local/share/uv/python"
+ENV UV_PYTHON=${PYTHON_VERSION}
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh && \
+    if [ -n "${PYTHON_VERSION}${EXTRA_PYTHON_VERSIONS}" ]; then \
+        uv python install ${PYTHON_VERSION} ${EXTRA_PYTHON_VERSIONS}; \
+    fi && \
+    if [ -n "${PYTHON_VERSION}" ]; then \
+        py="$(uv python find "${PYTHON_VERSION}")" && \
+        ln -sf "${py}" /usr/local/bin/python3 && \
+        ln -sf "${py}" /usr/local/bin/python; \
+    fi
+
+ENV PATH="/root/.local/bin:/root/.opencode/bin:$PATH"
 ENV OPENCODE_BINARY="/root/.opencode/bin/opencode"
 ENV OPENCHAMBER_HOST=0.0.0.0
 

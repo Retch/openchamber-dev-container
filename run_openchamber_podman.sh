@@ -20,6 +20,14 @@ if [ -f "${CONFIG_FILE}" ]; then
     source "${CONFIG_FILE}"
 fi
 
+PYTHON_VERSION="3.13"
+EXTRA_PYTHON_VERSIONS=""
+PYTHON_CONFIG_FILE="${SCRIPT_DIR}/python-versions.conf"
+if [ -f "${PYTHON_CONFIG_FILE}" ]; then
+    # shellcheck source=/dev/null
+    source "${PYTHON_CONFIG_FILE}"
+fi
+
 ARTCRAFT_APPS=""
 ARTCRAFT_CONFIG_FILE="${SCRIPT_DIR}/artcraft-apps.conf"
 if [ -f "${ARTCRAFT_CONFIG_FILE}" ]; then
@@ -41,10 +49,13 @@ fi
 
 echo "==> Build container image (${IMAGE_NAME})..."
 echo "    Node ${NODE_VERSION} (default), additional: ${EXTRA_NODE_VERSIONS:-none}"
+echo "    Python ${PYTHON_VERSION} (default), additional: ${EXTRA_PYTHON_VERSIONS:-none}"
 echo "    ArtCraft apps: ${ARTCRAFT_APPS:-none}"
 podman build \
     --build-arg "NODE_VERSION=${NODE_VERSION}" \
     --build-arg "EXTRA_NODE_VERSIONS=${EXTRA_NODE_VERSIONS}" \
+    --build-arg "PYTHON_VERSION=${PYTHON_VERSION}" \
+    --build-arg "EXTRA_PYTHON_VERSIONS=${EXTRA_PYTHON_VERSIONS}" \
     --build-arg "ARTCRAFT_APPS=${ARTCRAFT_APPS}" \
     -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
 

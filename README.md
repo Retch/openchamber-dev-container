@@ -13,14 +13,48 @@ ArtCraft suite apps.
 OpenChamber then runs in the background on [http://127.0.0.1:3000](http://127.0.0.1:3000).
 The UI password can be set with `OPENCHAMBER_UI_PASSWORD`.
 
+## Inside the image
+
+`run_openchamber_podman.sh` rebuilds the image on every start, so everything in
+it is decided at build time:
+
+- **Base packages** (always): curl, git, tar, gzip, bzip2, procps-ng, libatomic
+- **Node** via nvm: `NODE_VERSION` is the default version for opencode and
+  openchamber, `EXTRA_NODE_VERSIONS` installs more. `nvm use <version>` switches,
+  and a `.nvmrc` in a project directory is honored on `cd`.
+- **Python** via uv: uv itself is always installed; `PYTHON_VERSION` is the
+  default and also backs `UV_PYTHON` and the `python3`/`python` links,
+  `EXTRA_PYTHON_VERSIONS` installs more.
+- **opencode** and **@openchamber/web**
+- **ArtCraft apps** from `artcraft-apps.conf`, registered as MCP servers
+
+Anything else you want preinstalled — further dnf packages, other toolchains,
+extra MCP servers — goes into the `Dockerfile` the same way and appears after
+the next rebuild.
+
 ## Configuration
 
-Two config files in this directory are read on startup:
+Three config files in this directory are read on startup:
 
 | File                   | Purpose                                                             |
 | ---------------------- | ------------------------------------------------------------------- |
 | `node-versions.conf`   | Node version for opencode and openchamber, plus additional versions |
+| `python-versions.conf` | Default python version for uv, plus additional versions             |
 | `artcraft-apps.conf`   | ArtCraft suite apps to install and register as MCP servers          |
+
+### Python (uv)
+
+`python-versions.conf` selects the Python versions uv installs:
+
+```sh
+PYTHON_VERSION="3.13"
+EXTRA_PYTHON_VERSIONS=""
+```
+
+`PYTHON_VERSION` is the default: it backs `UV_PYTHON`, `python3` and `python`.
+uv works on the files in `/projects` right away (`uv run`, `uv sync`,
+`uv pip`, `uv tool install`), and `uv python install <version>` fetches further
+versions at runtime.
 
 ### ArtCraft apps
 
