@@ -141,5 +141,5 @@ config_gitconfig/*
 !config_gitconfig/.gitkeep
 config_ssh/*
 !config_ssh/.gitkeep
-config_data/*
-!config_data/.gitkeep
+projects/*
+!projects/.gitkeep

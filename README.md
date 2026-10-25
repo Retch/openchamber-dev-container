@@ -64,8 +64,8 @@ app and its `*-cli` into `/usr/bin`. Every app is then registered as an MCP
 server for opencode in `/etc/opencode/opencode.jsonc`, so the tools are
 available to agents right after the container starts.
 
-The apps work on the files in `/projects`, which is the `data` directory of this
-repository.
+The apps work on the files in `/projects`, which is the `projects` directory of
+this repository.
 
 ```sh
 ARTCRAFT_APPS="pdfcraft wordcraft gridcraft"

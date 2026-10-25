@@ -35,7 +35,7 @@ if [ -f "${ARTCRAFT_CONFIG_FILE}" ]; then
     source "${ARTCRAFT_CONFIG_FILE}"
 fi
 
-PROJECTS_DIR="./data"
+PROJECTS_DIR="./projects"
 CONFIG_DIR="./config_openchamber"
 SSH_DIR="./config_ssh"
 GITCONFIG_DIR="./config_gitconfig"
