@@ -7,10 +7,19 @@ set -e
 # ==========================================
 IMAGE_NAME="openchamber-fedora:latest"
 CONTAINER_NAME="openchamber-server"
-HOST_PORT="3000"
-UI_PASSWORD="${OPENCHAMBER_UI_PASSWORD:-SecurePassword42}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+HOST_PORT="3000"
+UI_PASSWORD="SecurePassword42"
+CONTAINER_CONFIG_FILE="${SCRIPT_DIR}/container.conf"
+if [ -f "${CONTAINER_CONFIG_FILE}" ]; then
+    # shellcheck source=/dev/null
+    source "${CONTAINER_CONFIG_FILE}"
+fi
+
+# The environment variable wins over the config file.
+UI_PASSWORD="${OPENCHAMBER_UI_PASSWORD:-${UI_PASSWORD}}"
 
 NODE_VERSION="24"
 EXTRA_NODE_VERSIONS=""
@@ -66,10 +75,12 @@ if podman ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
 fi
 
 echo "==> Start OpenChamber in background..."
+# OpenChamber always listens on 3000 inside the container, HOST_PORT is the
+# host side of the mapping.
 podman run -d \
   --name "${CONTAINER_NAME}" \
   --restart unless-stopped \
-  -p "127.0.0.1:${HOST_PORT}:${HOST_PORT}" \
+  -p "127.0.0.1:${HOST_PORT}:3000" \
   -v "${PROJECTS_DIR}:/projects:Z" \
   -v "${CONFIG_DIR}:/root/.config:Z" \
   -v "${SSH_DIR}:/root/.ssh:ro,Z" \

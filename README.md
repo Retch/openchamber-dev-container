@@ -10,8 +10,10 @@ ArtCraft suite apps.
 ./run_openchamber_podman.sh
 ```
 
-OpenChamber then runs in the background on [http://127.0.0.1:3000](http://127.0.0.1:3000).
-The UI password can be set with `OPENCHAMBER_UI_PASSWORD`.
+OpenChamber then runs in the background on [http://127.0.0.1:3000](http://127.0.0.1:3000)
+by default. The port and the UI password come from `container.conf`; the
+`OPENCHAMBER_UI_PASSWORD` environment variable overrides the password from the
+file.
 
 ## Inside the image
 
@@ -34,10 +36,11 @@ the next rebuild.
 
 ## Configuration
 
-Three config files in this directory are read on startup:
+Four config files in this directory are read on startup:
 
 | File                   | Purpose                                                             |
 | ---------------------- | ------------------------------------------------------------------- |
+| `container.conf`       | Port and UI password of the running container                       |
 | `node-versions.conf`   | Node version for opencode and openchamber, plus additional versions |
 | `python-versions.conf` | Default python version for uv, plus additional versions             |
 | `artcraft-apps.conf`   | ArtCraft suite apps to install and register as MCP servers          |
