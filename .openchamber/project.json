@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "projectActions": [
+    {
+      "id": "10776983-89c8-4cfb-93c9-0c2186d6b4ff",
+      "name": "Start Container",
+      "command": "./run_openchamber_podman.sh",
+      "icon": "play"
+    }
+  ]
+}
