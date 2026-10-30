@@ -143,3 +143,5 @@ config_ssh/*
 !config_ssh/.gitkeep
 projects/*
 !projects/.gitkeep
+data_opencode/*
+!data_opencode/.gitkeep

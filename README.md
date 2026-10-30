@@ -15,6 +15,14 @@ by default. The port and the UI password come from `container.conf`; the
 `OPENCHAMBER_UI_PASSWORD` environment variable overrides the password from the
 file.
 
+## Persisted data
+
+The script recreates the container on every start, so only the bind-mounted
+directories of this repository survive it: `projects` holds the project
+files, `data_opencode` the opencode sessions (chats) and database,
+`config_openchamber` the configuration, plus the read-only `config_ssh` and
+`config_gitconfig`.
+
 ## Inside the image
 
 `run_openchamber_podman.sh` rebuilds the image on every start, so everything in

@@ -49,12 +49,13 @@ if [ -f "${ARTCRAFT_CONFIG_FILE}" ]; then
 fi
 
 PROJECTS_DIR="./projects"
+DATA_DIR="./data_opencode"
 CONFIG_DIR="./config_openchamber"
 SSH_DIR="./config_ssh"
 GITCONFIG_DIR="./config_gitconfig"
 GITCONFIG_FILE="${GITCONFIG_DIR}/gitconfig"
 
-mkdir -p "${PROJECTS_DIR}" "${CONFIG_DIR}" "${SSH_DIR}" "${GITCONFIG_DIR}"
+mkdir -p "${PROJECTS_DIR}" "${DATA_DIR}" "${CONFIG_DIR}" "${SSH_DIR}" "${GITCONFIG_DIR}"
 
 if [ ! -f "${GITCONFIG_FILE}" ]; then
     touch "${GITCONFIG_FILE}"
@@ -80,12 +81,14 @@ fi
 
 echo "==> Start OpenChamber in background..."
 # OpenChamber always listens on 3000 inside the container, HOST_PORT is the
-# host side of the mapping.
+# host side of the mapping. The data mount keeps the opencode sessions
+# (chats), database and logs across container recreations.
 podman run -d \
   --name "${CONTAINER_NAME}" \
   --restart unless-stopped \
   -p "127.0.0.1:${HOST_PORT}:3000" \
   -v "${PROJECTS_DIR}:/projects:Z" \
+  -v "${DATA_DIR}:/root/.local/share/opencode:Z" \
   -v "${CONFIG_DIR}:/root/.config:Z" \
   -v "${SSH_DIR}:/root/.ssh:ro,Z" \
   -v "${GITCONFIG_FILE}:/root/.gitconfig:ro,Z" \
