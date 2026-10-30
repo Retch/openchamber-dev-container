@@ -66,6 +66,7 @@ echo "    Node ${NODE_VERSION} (default), additional: ${EXTRA_NODE_VERSIONS:-non
 echo "    Python ${PYTHON_VERSION} (default), additional: ${EXTRA_PYTHON_VERSIONS:-none}"
 echo "    ArtCraft apps: ${ARTCRAFT_APPS:-none}"
 podman build \
+    --no-cache \
     --build-arg "NODE_VERSION=${NODE_VERSION}" \
     --build-arg "EXTRA_NODE_VERSIONS=${EXTRA_NODE_VERSIONS}" \
     --build-arg "PYTHON_VERSION=${PYTHON_VERSION}" \
